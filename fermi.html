@@ -21,6 +21,73 @@ Max of x-axis: <input type="number" id="buttonXmax" value=9>
 
 <script>
 
+const uniform = (a, b) => Math.random()*(b-a) + b;
+const log = (x) => Math.log(x);
+const exp = (x) => Math.exp(x);
+
+const loguniform = (a, b) => exp(uniform(log(a), log(b)));
+
+const expectedCivs = () => {
+
+    // Estimates
+    const rate_of_star_formation = loguniform(1, 100);
+    const fraction_of_stars_with_planets = loguniform(0.1, 1);
+    const number_of_habitable_planets_per_star_system = loguniform(0.1, 1);
+    const fraction_of_habitable_planets_in_which_any_life_appears = 1;
+    // ^ more on this below
+    const fraction_of_planets_with_life_in_which_intelligent_life_appears = loguniform(0.001, 1);
+    const fraction_of_intelligent_planets_which_are_detectable_as_such = loguniform(0.01, 1);
+    const longevity_of_detectable_civilizations = loguniform(100, 10000000000);
+
+    // Expected number of civilizations in the Milky way;
+    // see footnote 3 (p. 5)
+    return rate_of_star_formation *
+      fraction_of_stars_with_planets *
+      number_of_habitable_planets_per_star_system *
+      fraction_of_habitable_planets_in_which_any_life_appears *
+      fraction_of_planets_with_life_in_which_intelligent_life_appears *
+      fraction_of_intelligent_planets_which_are_detectable_as_such *
+      longevity_of_detectable_civilizations;
+}
+
+const nSamples = 10;
+const civsSample = Array.from({length: nSamples}, expectedCivs);
+civsSample.sort();
+
+const xMin = civsSample[0];
+const xMax = civsSample[civsSample.length-1];
+
+// create an array of objects like {
+//  civs: number of civilisations, 
+//  cumProb: cumulative probability of at most this many civilisations
+// }
+const sampleData = civsSample.map((civs,i) => {return {civs, cumProb: i/nSamples}});
+
+const mean = array => array.reduce((a, b) => a + b) / array.length;
+const std = array => {
+    const mu = mean(array);
+    const variance = mean( array.map(x => (x-mu)*(x-mu)) )
+    return Math.sqrt(variance)
+}
+function percentile(array, p) { 
+    return array[ Math.floor(array.length * p / 100) ]
+};
+
+const summaryStats = {
+    min: civsSample[0],
+    max: civsSample[nSamples-1],
+    mean: mean(civsSample),
+    mode: percentile(civsSample, 50),
+    std: std(civsSample)
+};
+
+for (let p of [5, 10, 25, 50, 75, 90, 95]) {
+    summaryStats[`${p}%`] = percentile(civsSample, p);
+}
+
+console.log(summaryStats);
+
+
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
     width = 460 - margin.left - margin.right,
