@@ -77,15 +77,17 @@ function percentile(array, p) {
 };
 
 const summaryStats = {
-    min: civsSample[0],
-    max: civsSample[nSamples-1],
     mean: mean(civsSample),
-    std: std(civsSample)
+    std: std(civsSample),
+    min: xMin,
 };
 
 for (let p of [5, 10, 25, 50, 75, 90, 95]) {
     summaryStats[`${p}%`] = percentile(civsSample, p);
 }
+summaryStats['max'] = xMax;
+
+console.log(summaryStats)
 
 const summaryStatsArray = []
 for (let stat in summaryStats) { summaryStatsArray.push(stat) }
