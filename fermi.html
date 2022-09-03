@@ -17,13 +17,22 @@ Max of x-axis: <input type="number" id="buttonXmax" value=9>
 
 <!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
+<div id="summary_stats" style="display: grid; grid-template-columns: repeat(2, 1fr); width: 100px; gap: 2px;"></div>
 
 
 <script>
 
-const uniform = (a, b) => Math.random()*(b-a) + b;
-const log = (x) => Math.log(x);
-const exp = (x) => Math.exp(x);
+const uniform = (a, b) => Math.random()*(b-a) + a;
+const log = Math.log;
+const exp = Math.exp;
+
+const compFormatter = new Intl.NumberFormat('en', {notation: 'compact'});
+const sciFormatter = new Intl.NumberFormat('en', {notation: 'scientific', maximumSignificantDigits: 3});
+function formatNum(n) {
+    const n1 = compFormatter.format(n);
+    const n2 = sciFormatter.format(n).replace('E','e');
+    return n1.length < n2.length ? n1 : n2;
+}
 
 const loguniform = (a, b) => exp(uniform(log(a), log(b)));
 
@@ -50,9 +59,12 @@ const expectedCivs = () => {
       longevity_of_detectable_civilizations;
 }
 
-const nSamples = 10;
+const nSamples = 100;
 const civsSample = Array.from({length: nSamples}, expectedCivs);
 civsSample.sort();
+
+console.log({civsSample})
+
 
 const xMin = civsSample[0];
 const xMax = civsSample[civsSample.length-1];
@@ -77,7 +89,6 @@ const summaryStats = {
     min: civsSample[0],
     max: civsSample[nSamples-1],
     mean: mean(civsSample),
-    mode: percentile(civsSample, 50),
     std: std(civsSample)
 };
 
@@ -87,6 +98,17 @@ for (let p of [5, 10, 25, 50, 75, 90, 95]) {
 
 console.log(summaryStats);
 
+const summaryStatsArray = []
+for (let stat in summaryStats) {
+    summaryStatsArray.push(stat)
+    summaryStatsArray.push(formatNum(summaryStats[stat]))
+}
+var svg = d3.select("#summary_stats")
+  .selectAll("div")
+  .data(summaryStatsArray)
+  .enter()
+  .append('div')
+  .text(d => d);
 
 // set the dimensions and margins of the graph
 var margin = {top: 10, right: 30, bottom: 30, left: 60},
