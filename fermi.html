@@ -52,7 +52,7 @@ const expectedCivs = () => {
       longevity_of_detectable_civilizations;
 }
 
-const nSamples = 100;
+const nSamples = 200;
 const civsSample = Array.from({length: nSamples}, expectedCivs);
 civsSample.sort(function(a, b){return a - b});
 
@@ -86,14 +86,12 @@ for (let p of [5, 10, 25, 50, 75, 90, 95]) {
     summaryStats[`${p}%`] = percentile(civsSample, p);
 }
 
-console.log(summaryStats);
-
 const summaryStatsArray = []
 for (let stat in summaryStats) {
     summaryStatsArray.push(stat)
     summaryStatsArray.push(formatNum(summaryStats[stat]))
 }
-var svg = d3.select("#summary_stats")
+d3.select("#summary_stats")
   .selectAll("div")
   .data(summaryStatsArray)
   .enter()
