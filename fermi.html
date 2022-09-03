@@ -3,14 +3,13 @@
 <head>
 <meta charset="utf-8">
 
-
 <script src="https://d3js.org/d3.v4.js"></script>
 
 </head>
 <body>
 
 <div id="my_dataviz"></div>
-<div id="summary_stats" style="display: grid; grid-template-columns: repeat(4, 1fr); width: 100px; gap: 20px;"></div>
+<div id="summary_stats" style="display: grid; grid-template-columns: repeat(11, 1fr); width: 100px; gap: 20px;"></div>
 
 
 <script>
@@ -87,10 +86,8 @@ for (let p of [5, 10, 25, 50, 75, 90, 95]) {
 }
 
 const summaryStatsArray = []
-for (let stat in summaryStats) {
-    summaryStatsArray.push(stat)
-    summaryStatsArray.push(formatNum(summaryStats[stat]))
-}
+for (let stat in summaryStats) { summaryStatsArray.push(stat) }
+for (let stat in summaryStats) { summaryStatsArray.push(formatNum(summaryStats[stat])) }
 d3.select("#summary_stats")
   .selectAll("div")
   .data(summaryStatsArray)
