@@ -26,6 +26,8 @@ function formatNum(n) {
     return n1.length < n2.length ? n1 : n2;
 }
 
+// based on code from: https://forum.effectivealtruism.org/posts/vh3YvCKnCBp6jDDFd/?commentId=xrRrvGLM5d5XuDFfy
+
 const loguniform = (a, b) => exp(uniform(log(a), log(b)));
 
 const expectedCivs = () => {
