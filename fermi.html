@@ -54,10 +54,7 @@ const expectedCivs = () => {
 
 const nSamples = 100;
 const civsSample = Array.from({length: nSamples}, expectedCivs);
-civsSample.sort();
-
-console.log({civsSample})
-
+civsSample.sort(function(a, b){return a - b});
 
 const xMin = civsSample[0];
 const xMax = civsSample[civsSample.length-1];
